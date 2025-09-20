@@ -41,13 +41,32 @@ const Professor = mongoose.model("Professor", professorSchema);
 
 // Routes
 
-// Get all professors
+// Get all professors or search by name
+// For example: /professors?search=John
 app.get("/professors", async (req, res) => {
   try {
-    const profs = await Professor.find();
+    const { search } = req.query;
+    let profs;
+
+    if (search) {
+      // If a search query exists, perform a case-insensitive search
+      // across name, research, and publications.
+      // This is a more robust search.
+      profs = await Professor.find({
+        $or: [
+          { name: { $regex: search, $options: "i" } },
+          { research: { $regex: search, $options: "i" } },
+          { publications: { $regex: search, $options: "i" } },
+        ]
+      });
+    } else {
+      // If no search query, return all professors
+      profs = await Professor.find();
+    }
+
     res.json(profs);
   } catch (err) {
-    res.status(500).json({ error: "Failed to fetch professors" });
+    res.status(500).json({ error: "Error fetching or searching professors" });
   }
 });
 
@@ -61,23 +80,6 @@ app.post("/professors", async (req, res) => {
     res.status(400).json({ error: "Failed to add professor", details: err });
   }
 });
-
-// Search professor by name (case insensitive)
-// Search professors by name (returns all matches)
-app.get("/professors/search/:name", async (req, res) => {
-  try {
-    const profs = await Professor.find({
-      name: { $regex: req.params.name, $options: "i" }
-    });
-    if (profs.length === 0) {
-      return res.status(404).json({ message: "No professors found" });
-    }
-    res.json(profs);
-  } catch (err) {
-    res.status(500).json({ error: "Error searching professors" });
-  }
-});
-
 
 // Root route
 app.get("/", (req, res) => {
