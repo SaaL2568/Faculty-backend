@@ -27,7 +27,9 @@ const professorSchema = new mongoose.Schema({
   publications: String,
   courses: String,
   contact: String,
+  image: String // URL or relative path to image
 });
+
 
 const Professor = mongoose.model("Professor", professorSchema);
 
