@@ -63,19 +63,21 @@ app.post("/professors", async (req, res) => {
 });
 
 // Search professor by name (case insensitive)
+// Search professors by name (returns all matches)
 app.get("/professors/search/:name", async (req, res) => {
   try {
-    const prof = await Professor.findOne({
-      name: { $regex: new RegExp(req.params.name, "i") }
+    const profs = await Professor.find({
+      name: { $regex: req.params.name, $options: "i" }
     });
-    if (!prof) {
-      return res.status(404).json({ message: "No professor found" });
+    if (profs.length === 0) {
+      return res.status(404).json({ message: "No professors found" });
     }
-    res.json(prof);
+    res.json(profs);
   } catch (err) {
-    res.status(500).json({ error: "Error searching professor" });
+    res.status(500).json({ error: "Error searching professors" });
   }
 });
+
 
 // Root route
 app.get("/", (req, res) => {
