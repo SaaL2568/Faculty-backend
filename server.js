@@ -7,7 +7,14 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const app = express();
-app.use(cors());
+
+// Configure CORS to allow your GitHub Pages domain
+const corsOptions = {
+  origin: 'https://saal2568.github.io/faculty-frontend/', // <-- Replace this with your full URL
+  optionsSuccessStatus: 200 // For legacy browser support
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // MongoDB URI from environment variables
@@ -42,16 +49,12 @@ const Professor = mongoose.model("Professor", professorSchema);
 // Routes
 
 // Get all professors or search by name
-// For example: /professors?search=John
 app.get("/professors", async (req, res) => {
   try {
     const { search } = req.query;
     let profs;
 
     if (search) {
-      // If a search query exists, perform a case-insensitive search
-      // across name, research, and publications.
-      // This is a more robust search.
       profs = await Professor.find({
         $or: [
           { name: { $regex: search, $options: "i" } },
@@ -60,7 +63,6 @@ app.get("/professors", async (req, res) => {
         ]
       });
     } else {
-      // If no search query, return all professors
       profs = await Professor.find();
     }
 
