@@ -47,6 +47,15 @@ const professorSchema = new mongoose.Schema({
 const Professor = mongoose.model("professors", professorSchema);
 
 // Routes
+// Debug route to show current database and collections
+app.get("/debug", async (req, res) => {
+  try {
+    const collections = await mongoose.connection.db.listCollections().toArray();
+    res.json({ db: mongoose.connection.db.databaseName, collections });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 // Get all professors or search by name
 app.get("/professors", async (req, res) => {
