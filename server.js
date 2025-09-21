@@ -44,7 +44,7 @@ const professorSchema = new mongoose.Schema({
   image: String // optional image URL
 });
 
-const Professor = mongoose.model("Professor", professorSchema);
+const Professor = mongoose.model("professors", professorSchema);
 
 // Routes
 
