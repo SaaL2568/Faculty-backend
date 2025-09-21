@@ -10,7 +10,7 @@ const app = express();
 
 // Configure CORS to allow your GitHub Pages domain
 const corsOptions = {
-  origin: 'https://saal2568.github.io/faculty-frontend', // <-- No trailing slash
+  origin: 'https://saal2568.github.io', // <-- Remove /faculty-frontend
   optionsSuccessStatus: 200 // For legacy browser support
 };
 
